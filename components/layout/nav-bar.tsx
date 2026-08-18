@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import { Menu, Search, Sparkles } from "lucide-react";
+import { Menu, Sparkles } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { primaryNavItems, siteConfig } from "@/lib/constants";
@@ -13,12 +13,10 @@ import { Button } from "@/components/ui/button";
 import { IconButton } from "@/components/ui/icon-button";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { MobileNavSheet } from "@/components/layout/mobile-nav-sheet";
-import { useCommandPalette } from "@/components/command/command-palette-provider";
 
 export function NavBar() {
   const scrolled = useScrolled();
   const pathname = usePathname();
-  const { setOpen: setPaletteOpen } = useCommandPalette();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
@@ -65,25 +63,6 @@ export function NavBar() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <Button
-            variant="secondary"
-            size="sm"
-            className="hidden lg:inline-flex"
-            onClick={() => setPaletteOpen(true)}
-          >
-            <Search className="size-4" aria-hidden />
-            Search
-            <kbd className="ml-1 rounded border border-border-default px-1.5 py-0.5 text-caption text-text-tertiary">
-              ⌘K
-            </kbd>
-          </Button>
-          <IconButton
-            icon={<Search className="size-4" aria-hidden />}
-            label="Search"
-            size="sm"
-            className="lg:hidden"
-            onClick={() => setPaletteOpen(true)}
-          />
           <ThemeToggle />
           <Button
             href="/recruiter"

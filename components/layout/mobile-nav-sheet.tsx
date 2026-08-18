@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Search, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
 
 import {
   Sheet,
@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { primaryNavItems, siteConfig } from "@/lib/constants";
-import { useCommandPalette } from "@/components/command/command-palette-provider";
 
 type MobileNavSheetProps = {
   open: boolean;
@@ -19,8 +18,6 @@ type MobileNavSheetProps = {
 };
 
 export function MobileNavSheet({ open, onClose }: MobileNavSheetProps) {
-  const { setOpen: setPaletteOpen } = useCommandPalette();
-
   return (
     <Sheet open={open} onOpenChange={(next) => !next && onClose()}>
       <SheetContent
@@ -30,18 +27,6 @@ export function MobileNavSheet({ open, onClose }: MobileNavSheetProps) {
         <SheetHeader className="sr-only">
           <SheetTitle>Site navigation</SheetTitle>
         </SheetHeader>
-
-        <button
-          type="button"
-          onClick={() => {
-            onClose();
-            setPaletteOpen(true);
-          }}
-          className="mx-4 mt-4 flex items-center gap-2 rounded-md border border-border-default px-4 py-3 text-body-sm text-text-secondary"
-        >
-          <Search className="size-4" aria-hidden />
-          Search
-        </button>
 
         <nav aria-label="Primary" className="flex flex-1 flex-col p-4">
           {primaryNavItems.map((item) => (

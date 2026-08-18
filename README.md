@@ -39,8 +39,7 @@ described as research rather than authorship.
 - **WebGL fracture background** — an interactive Voronoi-tessellation effect written in raw WebGL1
   (no 3D library), rendered site-wide and responsive to pointer movement
 - **Dark and light themes** — system-aware, with the background effect re-paletted to match
-- **Command palette** — `Cmd/Ctrl + K` for navigation, plus single-key shortcuts for résumé,
-  projects, GitHub, LinkedIn and contact
+- **Keyboard shortcuts** — single-key jumps to résumé, projects, GitHub, LinkedIn and contact
 - **Scroll-reveal animations** — via Framer Motion
 - **Fully responsive** — mobile through desktop
 - **Accessible by default** — skip link, focus-visible rings, `aria-live` regions for streamed
@@ -104,7 +103,7 @@ Rezolve.ai's production platform, ingestion pipeline or vector infrastructure.
 **Styling & UI** — Tailwind CSS v4, Base UI primitives, `class-variance-authority`,
 `tailwind-merge`, Lucide and Simple Icons
 
-**Interaction & motion** — Framer Motion, `next-themes`, `cmdk` (command palette), and a custom
+**Interaction & motion** — Framer Motion, `next-themes`, and a custom
 WebGL1 fragment shader for the background effect
 
 **Tooling** — ESLint, Prettier with `prettier-plugin-tailwindcss`, TypeScript strict mode
