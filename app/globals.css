@@ -1,26 +1,199 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Token source: docs/02-design-system.md
+ *
+ * Two variable layers on purpose:
+ *  1. Semantic tokens (--bg-base, --accent, ...) named exactly as in the
+ *     design system doc, so this file stays traceable back to Phase 2.
+ *  2. shadcn/ui compatibility tokens (--background, --primary, ...), which
+ *     third-party shadcn primitives (Accordion, Sheet, Tooltip, Command)
+ *     read directly. They're thin aliases onto (1), not a second source
+ *     of truth.
+ *
+ * Naming collision, resolved: shadcn's `--accent` means "neutral hover/
+ * highlight background" (e.g. `bg-accent` on a menu item), but Phase 2's
+ * `--accent` means the brand indigo. Repointing shadcn's `--accent` to the
+ * brand color would tint every incidental hover surface indigo, which
+ * contradicts the "90-95% neutral" rule in docs/02-design-system.md §1.
+ * So shadcn's `--accent` stays neutral (bg-surface-2), and the brand color
+ * is exposed separately as the `brand` / `brand-2` Tailwind color tokens
+ * below — used only in the specific components Phase 2 §1 lists.
+ */
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg-base: #ffffff;
+  --bg-surface: #fafafa;
+  --bg-surface-2: #f2f2f3;
+  --border-subtle: #ebebec;
+  --border-default: #dddddf;
+  --text-primary: #0d0d0f;
+  --text-secondary: #4b4b52;
+  --text-tertiary: #7a7a80;
+  --accent: #4750c9;
+  --accent-2: #6558d3;
+  --accent-hover: #3d45b8;
+  --success: #3dd68c;
+  --warning: #e8b341;
+  --danger: #e5484d;
+  --accent-gradient: linear-gradient(135deg, #4750c9 0%, #6558d3 100%);
+
+  --background: var(--bg-base);
+  --foreground: var(--text-primary);
+  --card: var(--bg-surface);
+  --card-foreground: var(--text-primary);
+  --popover: var(--bg-surface);
+  --popover-foreground: var(--text-primary);
+  --primary: var(--accent);
+  --primary-foreground: #ffffff;
+  --secondary: var(--bg-surface-2);
+  --secondary-foreground: var(--text-primary);
+  --muted: var(--bg-surface-2);
+  --muted-foreground: var(--text-tertiary);
+  --accent-bg: var(--bg-surface-2);
+  --accent-foreground: var(--text-primary);
+  --destructive: var(--danger);
+  --destructive-foreground: #ffffff;
+  --border: var(--border-subtle);
+  --input: var(--border-default);
+  --ring: var(--accent);
+
+  color-scheme: light;
+}
+
+.dark {
+  --bg-base: #08090a;
+  --bg-surface: #0f1012;
+  --bg-surface-2: #17181b;
+  --border-subtle: #1f2023;
+  --border-default: #2a2b2f;
+  --text-primary: #f5f5f7;
+  --text-secondary: #a1a1a6;
+  --text-tertiary: #6e6e73;
+  --accent: #5e6ad2;
+  --accent-2: #7c6fe8;
+  --accent-hover: #7078e0;
+  --accent-gradient: linear-gradient(135deg, #5e6ad2 0%, #7c6fe8 100%);
+
+  color-scheme: dark;
 }
 
 @theme inline {
+  --color-bg-base: var(--bg-base);
+  --color-bg-surface: var(--bg-surface);
+  --color-bg-surface-2: var(--bg-surface-2);
+  --color-border-subtle: var(--border-subtle);
+  --color-border-default: var(--border-default);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-tertiary: var(--text-tertiary);
+  --color-brand: var(--accent);
+  --color-brand-2: var(--accent-2);
+  --color-brand-hover: var(--accent-hover);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent-bg);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-full: 999px;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --duration-fast: 150ms;
+  --duration-base: 250ms;
+
+  --container-content: 1280px;
+  --container-prose: 760px;
+  --container-recruiter: 920px;
+
+  --text-display-xl: clamp(2.75rem, 2rem + 3.5vw, 5rem);
+  --text-display-xl--line-height: 1.05;
+  --text-display-xl--letter-spacing: -0.02em;
+  --text-display-lg: clamp(2.25rem, 1.75rem + 2.5vw, 3.5rem);
+  --text-display-lg--line-height: 1.1;
+  --text-display-lg--letter-spacing: -0.02em;
+  --text-heading-lg: clamp(1.5rem, 1.3rem + 1vw, 2rem);
+  --text-heading-lg--line-height: 1.2;
+  --text-heading-lg--letter-spacing: -0.01em;
+  --text-heading-md: 1.25rem;
+  --text-heading-md--line-height: 1.3;
+  --text-heading-md--letter-spacing: -0.01em;
+  --text-heading-sm: 1.0625rem;
+  --text-heading-sm--line-height: 1.4;
+  --text-body-lg: 1.125rem;
+  --text-body-lg--line-height: 1.6;
+  --text-body-md: 1rem;
+  --text-body-md--line-height: 1.6;
+  --text-body-sm: 0.875rem;
+  --text-body-sm--line-height: 1.5;
+  --text-caption: 0.8125rem;
+  --text-caption--line-height: 1.4;
+  --text-caption--letter-spacing: 0.02em;
+  --text-mono-sm: 0.8125rem;
+  --text-mono-sm--line-height: 1.4;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@utility bg-gradient-brand {
+  background-image: var(--accent-gradient);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-text-primary;
+  }
+
+  html {
+    @apply font-sans;
+    /* Anchor jumps (case-study sub-nav) ease rather than teleport. The
+     * reduced-motion block below resets this to `auto`. */
+    scroll-behavior: smooth;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-ring;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
