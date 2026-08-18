@@ -41,6 +41,5 @@ export const keyboardShortcuts = {
   linkedin: "l",
   resume: "r",
   projects: "p",
-  aiAssistant: "a",
   contact: "c",
 } as const;

@@ -27,8 +27,6 @@ deep or as shallow as they need:
 | **Recruiter** | A condensed, single-screen candidate snapshot for anyone screening quickly |
 | **Contact** | Direct ways to get in touch |
 
-An AI portfolio assistant is available site-wide to answer questions about any of the above.
-
 A deliberate constraint runs through the content: every technical claim is written to be verifiable
 against the underlying source repository. Technologies are listed only where they are meaningfully
 used, skills are presented as tiers of depth rather than invented percentages, and research work is
@@ -38,12 +36,11 @@ described as research rather than authorship.
 
 - **Case-study project pages** — each project gets a full write-up rather than a card and a link
 - **Recruiter Mode** — a dedicated `/recruiter` page condensing the profile into one screen
-- **AI portfolio assistant** — "Ask about Zimran", answering from the site's own content
 - **WebGL fracture background** — an interactive Voronoi-tessellation effect written in raw WebGL1
   (no 3D library), rendered site-wide and responsive to pointer movement
 - **Dark and light themes** — system-aware, with the background effect re-paletted to match
 - **Command palette** — `Cmd/Ctrl + K` for navigation, plus single-key shortcuts for résumé,
-  projects, GitHub, LinkedIn, contact and the assistant
+  projects, GitHub, LinkedIn and contact
 - **Scroll-reveal animations** — via Framer Motion
 - **Fully responsive** — mobile through desktop
 - **Accessible by default** — skip link, focus-visible rings, `aria-live` regions for streamed
@@ -110,28 +107,10 @@ Rezolve.ai's production platform, ingestion pipeline or vector infrastructure.
 **Interaction & motion** — Framer Motion, `next-themes`, `cmdk` (command palette), and a custom
 WebGL1 fragment shader for the background effect
 
-**AI** — Anthropic SDK, called from a server-side Next.js Route Handler with streamed responses;
-Zod for request validation
-
 **Tooling** — ESLint, Prettier with `prettier-plugin-tailwindcss`, TypeScript strict mode
 
 The stacks of the showcased projects are listed with each project above and differ from the
 portfolio's own.
-
-## AI Portfolio Assistant
-
-The site includes an AI assistant that answers questions about my projects, experience, skills,
-background, and reasons to get in touch. It is grounded in the portfolio's own content, so its
-answers stay consistent with what the rest of the site says — including the distinction between work
-I researched and work I built.
-
-It is scoped deliberately: it answers portfolio-related questions and declines everything else. It is
-not a general-purpose chatbot.
-
-The assistant runs entirely server-side. The API key is read from the environment inside the route
-handler — no `NEXT_PUBLIC_` prefix, no module-scope capture — so it is never bundled into client code
-or exposed to the browser. If no key is configured, the rest of the site works normally and the
-assistant reports that it isn't connected.
 
 ## Local Development
 
@@ -156,15 +135,13 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ### Environment variables
 
-Both are optional. Without them the site builds and runs normally — only the AI assistant is
-inactive, and it says so rather than failing.
+The variable below is optional. Without it the site builds and runs normally.
 
 | Variable | Required | Purpose |
 | --- | --- | --- |
-| `ANTHROPIC_API_KEY` | For the AI assistant | Server-side key from [console.anthropic.com](https://console.anthropic.com). Never exposed to the browser. |
 | `NEXT_PUBLIC_SITE_URL` | Optional | Canonical site URL used for metadata. Defaults to `http://localhost:3000`. |
 
-`.env.example` documents both. All `.env*` files are gitignored — never commit real values.
+`.env.example` documents it. All `.env*` files are gitignored — never commit real values.
 
 ### Available scripts
 
@@ -184,17 +161,14 @@ inactive, and it says so rather than failing.
 app/
   (marketing)/       Public pages — home, about, experience, projects,
                      skills, certificates, contact, recruiter
-  api/chat/          Server-side route handler for the AI assistant
 components/
   sections/          Home page sections
   case-study/        Project case-study building blocks
   visual/            WebGL fracture background (shader + renderer)
-  ai-assistant/      Assistant panel, trigger and provider
   ui/                Shared primitives
 lib/
   content/           Typed content modules — projects, experience, skills,
                      about, certificates, availability, recruiter
-  ai/                System prompt and portfolio context (server-only)
 types/               Shared TypeScript types
 public/              Static assets, résumé, images and logos
 ```

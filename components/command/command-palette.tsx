@@ -25,11 +25,9 @@ import {
 } from "@/components/ui/command";
 import { primaryNavItems, siteConfig, socialLinks } from "@/lib/constants";
 import { useCommandPalette } from "@/components/command/command-palette-provider";
-import { useAIAssistant } from "@/components/ai-assistant/ai-assistant-provider";
 
 export function CommandPalette() {
   const { open, setOpen } = useCommandPalette();
-  const { setOpen: setAIAssistantOpen } = useAIAssistant();
   const { resolvedTheme, setTheme } = useTheme();
   const router = useRouter();
 
@@ -88,12 +86,6 @@ export function CommandPalette() {
           >
             {resolvedTheme === "dark" ? <Sun /> : <Moon />}
             Toggle theme
-          </CommandItem>
-          <CommandItem
-            onSelect={() => runCommand(() => setAIAssistantOpen(true))}
-          >
-            <Sparkles />
-            Ask the AI assistant
           </CommandItem>
         </CommandGroup>
 

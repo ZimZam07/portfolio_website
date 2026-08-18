@@ -1,6 +1,5 @@
 import { NavBar } from "@/components/layout/nav-bar";
 import { Footer } from "@/components/layout/footer";
-import { AIAssistantTrigger } from "@/components/ai-assistant/ai-assistant-trigger";
 import { FractureBackground } from "@/components/visual/fracture-background";
 
 /**
@@ -42,7 +41,6 @@ export default function MarketingLayout({
         {children}
       </main>
       <Footer />
-      <AIAssistantTrigger />
     </>
   );
 }
