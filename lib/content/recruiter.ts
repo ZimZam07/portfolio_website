@@ -150,7 +150,7 @@ export function getTechGroups(): TechGroup[] {
   ].filter((group) => group.skills.length > 0);
 }
 
-/** The full featured set — there are two, and a third isn't invented. */
+/** The full featured set, straight from lib/content/projects.ts — none invented. */
 export function getSelectedWork() {
   return getFeaturedProjects();
 }

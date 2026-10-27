@@ -34,6 +34,7 @@ const WORK = {
   jbites: "JBITES — Online Canteen Application",
   lostFound: "JIIT Lost & Found",
   fitness: "AI-Assisted Fitness App",
+  tarmacos: "TarmacOS",
   rezolve: "Rezolve.ai Internship",
   portfolio: "Portfolio Website",
 } as const;
@@ -149,7 +150,8 @@ const allSkills: Skill[] = [
       // "AI Fitness Assistant" was removed here on 2026-08-17: that
       // repository contains no Python (React + TypeScript on Vite, with a
       // Deno edge function), and the claim contradicted its own case study.
-      appliedIn: ["Rezolve Internship", "Personal Python projects"],
+      // TarmacOS: its bridge (bridge/server.py) is Python standard library.
+      appliedIn: ["Rezolve Internship", WORK.tarmacos, "Personal Python projects"],
     },
   },
   { name: "TypeScript", category: "Languages", proficiency: "proficient", tier: "core" },
@@ -161,7 +163,13 @@ const allSkills: Skill[] = [
     tier: "working",
     evidence: { appliedIn: [CERT.forage] },
   },
-  { name: "C++", category: "Languages", proficiency: "comfortable", tier: "working" },
+  {
+    name: "C++",
+    category: "Languages",
+    proficiency: "comfortable",
+    tier: "working",
+    evidence: { appliedIn: [WORK.tarmacos] },
+  },
   {
     name: "SQL",
     category: "Languages",
@@ -772,6 +780,20 @@ const APPLICATIONS: SkillApplication[] = [
     href: "/projects/ai-fitness-assistant",
     detail:
       "Mifflin–St Jeor BMR, TDEE and hydration targets computed locally, so deterministic questions never reach a model.",
+  },
+  {
+    skill: "C++ & POSIX Threads",
+    context: "TarmacOS",
+    href: "/projects/tarmacos",
+    detail:
+      "A Linux simulation engine with a pthread per flight and per ground service, coordinated by one mutex, condition variables and semaphores.",
+  },
+  {
+    skill: "Processes & IPC",
+    context: "TarmacOS",
+    href: "/projects/tarmacos",
+    detail:
+      "A real child process created with fork(), exchanging requests and plans over two pipes with a poll() timeout, and reaped with waitpid().",
   },
   {
     skill: "Pinecone & Vector Search",

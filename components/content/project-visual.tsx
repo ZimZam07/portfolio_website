@@ -1,5 +1,6 @@
 import { ProjectFlowVisual } from "@/components/content/project-flow-visual";
 import { ProjectAssistantVisual } from "@/components/content/project-assistant-visual";
+import { ProjectApronVisual } from "@/components/content/project-apron-visual";
 import type { Project } from "@/types/project";
 
 type ProjectVisualProps = {
@@ -20,6 +21,8 @@ export function ProjectVisual({ visual, size, className }: ProjectVisualProps) {
       return <ProjectFlowVisual size={size} className={className} />;
     case "assistant":
       return <ProjectAssistantVisual size={size} className={className} />;
+    case "apron":
+      return <ProjectApronVisual size={size} className={className} />;
     default:
       return null;
   }

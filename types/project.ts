@@ -6,7 +6,8 @@ export type ProjectCategory =
   | "Frontend"
   | "Full Stack"
   | "Android"
-  | "Research";
+  | "Research"
+  | "Systems";
 
 export type ProjectStatus = "shipped" | "in-progress" | "archived";
 
@@ -29,7 +30,15 @@ export type CapabilityIcon =
   | "command"
   | "log"
   | "plan"
-  | "auth";
+  | "auth"
+  | "scheduler"
+  | "resources"
+  | "threads"
+  | "deadlock"
+  | "memory"
+  | "disk"
+  | "ipc"
+  | "sync";
 
 export type ProjectCapability = {
   title: string;
@@ -100,7 +109,7 @@ export type Project = {
    * `components/content/project-visual.tsx`; each is purpose-built for its
    * project rather than a generic illustration.
    */
-  visual?: "recovery-lifecycle" | "assistant";
+  visual?: "recovery-lifecycle" | "assistant" | "apron";
   engineeringFocus?: { summary: string; areas: string[] };
   /** e.g. "Solo project" — omitted entirely when not meaningful (wireframes §2.11). */
   role?: string;
@@ -113,7 +122,13 @@ export type Project = {
   lessonsLearned?: string[];
   futureImprovements?: string[];
   metrics?: { label: string; value: string }[];
-  links: { github?: string; live?: string; demoVideo?: string };
+  links: {
+    github?: string;
+    live?: string;
+    demoVideo?: string;
+    /** Short expectation-setting line shown beside the case study's live-demo buttons. */
+    liveNote?: string;
+  };
   timeline: { start: string; end?: string };
   team?: { name: string; role: string }[];
   dateAdded: string;

@@ -19,9 +19,216 @@ import type { Project } from "@/types/project";
  * logic. None of that is represented here. No model name is claimed either:
  * the edge function pins no `model` field and takes the gateway default.
  *
+ * TarmacOS, checked against its repository and docs: the dashboard is plain
+ * HTML/CSS/JavaScript modules — not React or Next.js — and the browser never
+ * runs the C++ engine; a Python bridge relays between them. Flights are
+ * logical processes (each run by a real pthread); the only real OS child
+ * process is the baggage-route planner. Paging and disk scheduling are
+ * simulations of the algorithms, not management of real memory or a disk.
+ * The figures quoted (resource counts, finish ticks, test counts) come from
+ * the source and its recorded test results, not from estimates.
+ *
  * TODO: remaining projects get added here one at a time, on request.
  */
 const projects: Project[] = [
+  {
+    slug: "tarmacos",
+    title: "TarmacOS",
+    kicker: "Ground & Gate Ops Control",
+    tagline:
+      "An interactive airport-apron simulator where flights are processes and ground services are threads — bringing scheduling, concurrency, resource allocation, deadlocks, paging and disk scheduling together in one system.",
+    positioning:
+      "An airport-apron simulation that runs scheduling, concurrency, deadlock handling, paging and disk scheduling together in one C++ engine on Linux.",
+    category: "Systems",
+    status: "shipped",
+    featured: true,
+    role: "Solo project",
+
+    problemStatement:
+      "Operating-systems concepts are usually met one at a time: a scheduling exercise here, a Banker's table there, a producer–consumer snippet on its own. Each makes sense in isolation, but the behaviour worth understanding — a scheduling decision changing who holds a resource, a blocked thread becoming part of a deadlock — only appears when the mechanisms share one system, and a static diagram can't show it happening.",
+    solution:
+      "TarmacOS puts those mechanisms on one airport apron. Each flight is a logical process competing for a single apron-control CPU and run by its own POSIX thread; refuelling and baggage services are concurrent worker threads; gates, fuel trucks and tugs are the limited resources they contend for. A C++ engine on Linux runs the simulation tick by tick, a Python bridge streams its state to the browser, and a plain HTML, CSS and JavaScript dashboard renders it — so every Gantt chart, allocation graph and page table on screen is one the engine actually produced.",
+
+    highlights: [
+      "CPU Scheduling",
+      "Deadlock Management",
+      "POSIX Threads & Semaphores",
+      "Real fork() & Pipes",
+    ],
+
+    capabilities: [
+      {
+        icon: "scheduler",
+        title: "Process Scheduling",
+        description:
+          "Flights move through NEW → READY → RUNNING ⇄ BLOCKED → TERMINATED while a dispatcher decides which eligible flight gets the apron-control CPU each tick — under FCFS, Priority with optional preemption, or Round Robin. The Gantt chart and waiting and turnaround times come from the engine's own dispatch log.",
+      },
+      {
+        icon: "resources",
+        title: "Shared Resource Allocation",
+        description:
+          "Six gates, two fuel trucks and two tugs are tracked with owners and a pending-request queue. A flight that asks for equipment already in use blocks for real until the request is granted.",
+      },
+      {
+        icon: "threads",
+        title: "Concurrent Ground Services",
+        description:
+          "Every flight runs on its own pthread, and each refuelling or baggage service is a separate worker thread — created with a task struct and joined to collect its result — all contending for the same equipment.",
+      },
+      {
+        icon: "deadlock",
+        title: "Deadlock Management",
+        description:
+          "Four policies, each a different stance: prevention enforces a Gate → Truck → Tug order, avoidance defers any request Banker's algorithm finds unsafe, detection finds the cycle and stops there, and recovery rolls back or terminates a victim so the rest can finish.",
+      },
+      {
+        icon: "memory",
+        title: "Demand Paging",
+        description:
+          "Flights touch pages of their own address space; a missing page faults into a fixed set of frames, FIFO chooses the victim when they are full, and page tables and address translation stay inspectable.",
+      },
+      {
+        icon: "disk",
+        title: "Disk Scheduling",
+        description:
+          "The baggage cart stands in for a disk head moving along the apron. Batches of baggage requests are served in FCFS, SSTF or SCAN order, so total head movement can be compared across policies.",
+      },
+      {
+        icon: "ipc",
+        title: "Real Interprocess Communication",
+        description:
+          "The baggage-route planner is a genuine child process created with fork(). The engine sends it each request batch over one pipe, reads the planned order back over another, and reaps it with waitpid() on shutdown.",
+      },
+      {
+        icon: "sync",
+        title: "Thread Synchronisation",
+        description:
+          "A mutex and condition variables guard all simulation state, baggage moves through a four-slot bounded buffer coordinated by counting semaphores, and a binary semaphore allows one exchange on the child's pipe at a time.",
+      },
+    ],
+
+    workflow: [
+      {
+        title: "Admit",
+        description:
+          "At the start of each tick, flights whose arrival time has come move from NEW to READY, in a fixed order.",
+        detail: "NEW → READY",
+      },
+      {
+        title: "Dispatch",
+        description:
+          "The active scheduling policy picks the one flight allowed to use the apron-control CPU for this tick.",
+        detail: "CpuDispatcher · FCFS / Priority / RR",
+      },
+      {
+        title: "Take turns",
+        description:
+          "The clock thread signals that flight and every working service thread, then waits until each has acknowledged its turn.",
+        detail: "pthread_cond_signal · ackCv",
+      },
+      {
+        title: "Record intents",
+        description:
+          "Each thread executes exactly one step. Instead of changing shared tables directly, it records an intent — a request, a release, a page touch or a phase change.",
+        detail: "intents · (spid, task, seq)",
+      },
+      {
+        title: "Resolve",
+        description:
+          "The clock applies every intent in a fixed order: it grants requests under the deadlock policy, runs detection and recovery, pages memory, moves the baggage cart, checks invariants and publishes a snapshot to the dashboard.",
+        detail: "resolve.cpp · snapshot",
+      },
+    ],
+
+    technicalNotes: [
+      {
+        area: "Engine",
+        detail:
+          "C++17 on Linux, built with Make, calling POSIX APIs directly — pthread_*, sem_*, fork, pipe, read/write, poll and waitpid. There are no third-party libraries, and std::thread and std::mutex are deliberately avoided so every mechanism remains a visible POSIX call.",
+      },
+      {
+        area: "Determinism",
+        detail:
+          "Threads run in parallel and block for real, yet every scenario replays identically: steps only record intents, and each shared decision is made once per tick after sorting them by flight, task and sequence. The end-to-end tests run each scenario ten times and require byte-identical event streams.",
+      },
+      {
+        area: "Locking",
+        detail:
+          "A single pthread mutex protects all simulation state, and every wait is a while-loop around pthread_cond_wait, so spurious wake-ups are harmless. That mutex is never held while blocking on a semaphore or on the child's pipe, which means neither wait can deadlock the engine itself.",
+      },
+      {
+        area: "Deadlock policies",
+        detail:
+          "Prevention breaks circular wait with a fixed resource order. Avoidance runs Banker's safety and request algorithms over Allocation, Max and Need matrices built from the live tables. Detection uses the same matrices to find a cycle, and recovery picks a victim — lowest priority, then youngest — to roll back or terminate.",
+      },
+      {
+        area: "Child process",
+        detail:
+          "The engine forks the baggage handler before any thread exists, since forking a multithreaded process copies only the calling thread. Each side closes the pipe ends it doesn't use, the parent waits for replies with a poll() timeout so a stuck child can't hang the engine, and a killed child is reaped and reported rather than crashing the simulation.",
+      },
+      {
+        area: "Bridge",
+        detail:
+          "A Python standard-library server passes dashboard commands to the engine's stdin as text lines, and streams the JSON snapshots and events from its stdout back to the browser over Server-Sent Events. The hosted version starts a separate engine for each browser session.",
+      },
+      {
+        area: "Dashboard",
+        detail:
+          "Plain HTML, CSS and JavaScript modules with no framework. Nine views — overview, flights, scheduler, resources, deadlocks, memory, baggage and disk, threads and sync, and an ops terminal — render the latest engine snapshot and compute no OS results of their own.",
+      },
+      {
+        area: "Hosting",
+        detail:
+          "The dashboard is served as static files from Vercel, while the engine and bridge run in a Docker container on Render. The split exists because the engine is a long-lived Linux process holding threads, a child process and open pipes — something short-lived serverless functions can't keep alive.",
+      },
+      {
+        area: "Testing",
+        detail:
+          "31 unit tests check the scheduling, Banker's, detection, paging and disk algorithms against hand-calculated cases. End-to-end tests drive the live engine through every reference scenario, all four deadlock policies, and its real threads, pipes and child process; integration tests cover the bridge.",
+      },
+    ],
+
+    engineeringFocus: {
+      summary:
+        "No single algorithm here is the hard part — each is a textbook exercise. The challenge was making them share one system without the results turning nondeterministic. Real threads contend for a real lock, so the design separates doing from deciding: threads record intents, and the clock resolves them in a fixed order every tick. That is what lets a live, concurrent engine reproduce hand-calculated scheduling results exactly, and lets the interface label honestly which parts are real POSIX mechanisms and which are simulated.",
+      areas: [
+        "Systems programming",
+        "Concurrency & synchronisation",
+        "Deadlock handling",
+        "Process & IPC design",
+        "Deterministic simulation",
+        "Reference-case testing",
+      ],
+    },
+
+    impact: [
+      { from: "OS topics studied in isolation", to: "One system where they interact" },
+      { from: "Static algorithm diagrams", to: "State produced by a live engine" },
+      { from: "Concurrency in theory", to: "Real threads, semaphores and pipes" },
+      { from: "Results worked out by hand", to: "Hand calculations the engine reproduces" },
+    ],
+
+    techStack: [
+      "C++17",
+      "POSIX Threads",
+      "Linux",
+      "POSIX IPC",
+      "Python",
+      "JavaScript",
+      "HTML & CSS",
+      "Docker",
+    ],
+    links: {
+      live: "https://tarmacos-kohl.vercel.app/",
+      github: "https://github.com/ZimZam07/tarmacos",
+      liveNote:
+        "Note: The TarmacOS server may take a few seconds to connect when you first open the demo.",
+    },
+    timeline: { start: "Oct 2026" },
+    dateAdded: "2026-10-27",
+    visual: "apron",
+  },
+
   {
     slug: "jiit-lost-and-found",
     title: "JIIT Lost & Found",

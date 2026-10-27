@@ -32,7 +32,7 @@ const STATUS_TONE: Record<ProjectStatus, "success" | "brand" | "neutral"> = {
  * themselves when absent rather than rendering an empty slot (§2.11).
  */
 export function CaseStudyHero({ project }: CaseStudyHeroProps) {
-  const { live, github } = project.links;
+  const { live, github, liveNote } = project.links;
 
   return (
     <div className="grid gap-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:items-center lg:gap-16">
@@ -120,6 +120,12 @@ export function CaseStudyHero({ project }: CaseStudyHeroProps) {
             </Button>
           )}
         </div>
+
+        {live && liveNote && (
+          <p className="mt-3 max-w-[54ch] text-body-sm text-text-tertiary">
+            {liveNote}
+          </p>
+        )}
       </div>
 
       <ProjectVisual visual={project.visual} size="expanded" />

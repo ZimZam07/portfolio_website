@@ -47,7 +47,7 @@ export default async function ProjectCaseStudyPage({ params }: PageProps) {
 
   if (!project) notFound();
 
-  const { live, github } = project.links;
+  const { live, github, liveNote } = project.links;
   const hasOverview = Boolean(project.problemStatement || project.solution);
 
   // Sub-nav pills are derived from what this project actually has, so a
@@ -184,27 +184,34 @@ export default async function ProjectCaseStudyPage({ params }: PageProps) {
               Back to all projects
             </Link>
 
-            <div className="flex flex-wrap items-center gap-3">
-              {live && (
-                <Button href={live} external variant="primary" className="group">
-                  Explore Live Platform
-                  <ArrowUpRight
-                    className="size-4 transition-transform duration-fast ease-out motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5"
-                    aria-hidden
-                  />
-                  <span className="sr-only">(opens in a new tab)</span>
-                </Button>
-              )}
-              {github && (
-                <Button href={github} external variant="secondary" className="group">
-                  <BrandIcon icon={siGithub} className="size-4" aria-hidden />
-                  View Source
-                  <ArrowUpRight
-                    className="size-4 transition-transform duration-fast ease-out motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5"
-                    aria-hidden
-                  />
-                  <span className="sr-only">(opens in a new tab)</span>
-                </Button>
+            <div className="flex flex-col items-start gap-3 sm:items-end">
+              <div className="flex flex-wrap items-center gap-3">
+                {live && (
+                  <Button href={live} external variant="primary" className="group">
+                    Explore Live Platform
+                    <ArrowUpRight
+                      className="size-4 transition-transform duration-fast ease-out motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5"
+                      aria-hidden
+                    />
+                    <span className="sr-only">(opens in a new tab)</span>
+                  </Button>
+                )}
+                {github && (
+                  <Button href={github} external variant="secondary" className="group">
+                    <BrandIcon icon={siGithub} className="size-4" aria-hidden />
+                    View Source
+                    <ArrowUpRight
+                      className="size-4 transition-transform duration-fast ease-out motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5"
+                      aria-hidden
+                    />
+                    <span className="sr-only">(opens in a new tab)</span>
+                  </Button>
+                )}
+              </div>
+              {live && liveNote && (
+                <p className="max-w-[48ch] text-body-sm text-text-tertiary sm:text-right">
+                  {liveNote}
+                </p>
               )}
             </div>
           </div>

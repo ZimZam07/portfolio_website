@@ -37,7 +37,7 @@ const PILLARS: AboutPillar[] = [
     icon: "engineering",
     description:
       "Full-stack applications where the interface, data model, access rules and integrations all have to agree with each other.",
-    evidence: "Two shipped applications",
+    evidence: "Two shipped applications · TarmacOS",
   },
   {
     id: "product",
@@ -98,9 +98,9 @@ export function getThinkingSteps(): ThinkingStep[] {
 }
 
 /*
- * Only Rezolve.ai carries a period, because it's the only one with dates I
- * can state accurately. The rest are ordered as threads rather than
- * timestamped events.
+ * Only Rezolve.ai and TarmacOS carry a period, because they're the only ones
+ * with dates I can state accurately. The rest are ordered as threads rather
+ * than timestamped events.
  */
 const JOURNEY: JourneyMilestone[] = [
   {
@@ -150,6 +150,15 @@ const JOURNEY: JourneyMilestone[] = [
     period: "Jul — Aug 2026",
     description:
       "Investigated enterprise agentic AI: how knowledge moves from source systems through ingestion and embeddings into vector search, and the data-quality problems that quietly degrade it.",
+  },
+  {
+    id: "tarmacos",
+    kind: "building",
+    title: "Built TarmacOS",
+    context: "Solo project · Operating-systems simulation",
+    period: "Oct 2026",
+    description:
+      "An airport-apron simulation in C++ on Linux that brings process scheduling, concurrency and synchronisation, shared-resource management, deadlock handling, memory management and disk scheduling together in one system.",
   },
   {
     id: "forever-india",
