@@ -5,7 +5,7 @@ B.Tech CSE at JIIT (expected 2028), based in Noida, India.
 
 Built with Next.js 16, React 19, TypeScript and Tailwind CSS v4.
 
-**Live site — coming soon** *(this line will be updated once the site is deployed)*
+**Live site:** [portfoliowebsite-mu-murex.vercel.app](https://portfoliowebsite-mu-murex.vercel.app/)
 
 **Repository:** [github.com/ZimZam07/portfolio_website](https://github.com/ZimZam07/portfolio_website)
 
